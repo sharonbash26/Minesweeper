@@ -1,17 +1,21 @@
 'use strict'
 
 function renderBoard(mat, selector) {
-
+    var cell
     var strHTML = '<table border="0"><tbody>'
     for (var i = 0; i < mat.length; i++) {
 
         strHTML += '<tr>'
         for (var j = 0; j < mat[0].length; j++) {
+            if (mat[i][j].isShown) {
+                cell = mat[i][j].minesAroundCount
+            } else {
+                cell = '🟦'
+            }
 
-            const cell = mat[i][j]
             const className = `cell cell-${i}-${j}`
 
-           // TODO I ADD THIS AND I NEED TO CHANGE THIS ACCRODING !!!!!/////
+            // TODO I ADD THIS AND I NEED TO CHANGE THIS ACCRODING !!!!!/////
             strHTML += `<td class="${className}"
             data-i="${i}" data-j="${j}"
             onclick="onCellClicked(this,${i},${j})">
@@ -26,28 +30,21 @@ function renderBoard(mat, selector) {
     const elContainer = document.querySelector(selector)
     elContainer.innerHTML = strHTML
 }
-function onCellClicked(elCell, cellI, cellJ){
-    console.log('hi')
+function onCellClicked(elCell, cellI, cellJ) {
+    
+    var countBombs=gBoard[cellI][cellJ].minesAroundCount
     var elCell = document.querySelector(`[data-i="${cellI}"][data-j="${cellJ}"]`)
-    elCell.innerText = '😋'
+    if (gBoard[cellI][cellJ].isMine && gBoard[cellI][cellJ].isShown) {
+        console.log('tt')
+        elCell.innerText = BOMB
+    }else{
+        elCell.innerText=countBombs
+    }
+    if(gBoard[cellI][cellJ].isMark && gBoard[cellI][cellJ].isShown){
+        elCell.innerText=FLAG
+    }
 }
-//TODO I ADD THIS AND I NEED TO CHANGE THIS ACCRODING !!!!!
-// function onCellClicked(elCell, cellI, cellJ) {
-//     console.log('elCell', elCell)
-//     console.log('cellI', cellI)
-//     console.log('cellJ', cellJ)
-//     // if(elCell.innerText === LIFE)
-//     if (gBoard[cellI][cellJ] === BOMB) {
-//         // model:
-//         gBoard[cellI][cellJ] = BOMB
-//         // console.log(gBoard)
-//         // dom:
-//         elCell.innerText = BOMB
 
-//         blowUpNegs(cellI, cellJ)
-//     }
-
-// }
 
 // location is an object like this - { i: 2, j: 7 }
 function renderCell(location, value) {
