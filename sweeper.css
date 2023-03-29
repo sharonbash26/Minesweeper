@@ -1,0 +1,20 @@
+body {
+    background-color: black;
+    color: white;
+    text-align: center;
+  }
+  
+  table {
+    margin: auto;
+    color: aqua;
+    background-color: antiquewhite;
+  }
+  
+  .cell {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5em;
+    background-color: aliceblue;
+  }
+
+
