@@ -8,26 +8,16 @@ function renderBoard(mat, selector) {
         strHTML += '<tr>'
         for (var j = 0; j < mat[0].length; j++) {
             //debugger
-            if (mat[i][j].isShown) {
-                //console.log('mat[i][j]',mat[i][j].isShown,'hh')
-
-                cell = mat[i][j].minesAroundCount
-            } else {
-                //console.log('mat[i][j]',mat[i][j].isShown,'hh')
-
+            if (!mat[i][j].isShown) {
                 cell = '🟦'
-
             }
-
             const className = `cell cell-${i}-${j}`
 
-            // TODO I ADD THIS AND I NEED TO CHANGE THIS ACCRODING !!!!!/////
             strHTML += `<td class="${className}"
             data-i="${i}" data-j="${j}"
             onclick="onCellClicked(this,${i},${j})" onmousedown="onCellMouseDown(event,${i},${j})">
             ${cell}</td>`
-            //////////////////////////////////////////////////////////////////
-            //strHTML += `<td class="${className}">${cell}" onclick="onCellClicked(this,${i},${j})</td>`
+
         }
         strHTML += '</tr>'
     }
@@ -45,42 +35,56 @@ function onCellMouseDown(event, cellI, cellJ) {
     } else {
         gIsRightClick = false // reset gIsRightClick to false
         onCellClicked(event.target, cellI, cellJ);
-        
     }
 }
-function onCellClicked(elCell, cellI, cellJ,) {
-  //  debugger
+function onCellClicked(elCell, cellI, cellJ) {
+    gRoundNumber++
+    if (gBoard[cellI][cellJ].isShown) {
+        return
+    }
     if (gIsRightClick) {
         if (elCell.innerText === FLAG) {
             elCell.innerText = '🟦'
-            gBoard[cellI][cellJ].isMark=false
-            gBoard[cellI][cellJ].isShown=false
+            gBoard[cellI][cellJ].isMarked = false
             console.log('new board')
             console.table(gBoard)
             return
-        }
-        elCell.innerText = FLAG
-        gBoard[cellI][cellJ].isMark=true
-        gBoard[cellI][cellJ].isShown=true
-     //   gBoard[cellI][cellJ].isShown = true
-    //    console.log('yy')
-        // console.log(gBoard[cellI][cellJ].isShown)
+        } else if (elCell.innerText === '🟦' && !gBoard[cellI][cellJ].isMine)
+            elCell.innerText = FLAG
+        gBoard[cellI][cellJ].isMarked = true
+        console.log('new board')
+        console.table(gBoard)
         return
     }
-
-    console.table(gBoard)
     gIsRightClick = false
+    //  debugger
     var countBombs = gBoard[cellI][cellJ].minesAroundCount
     var elCell = document.querySelector(`[data-i="${cellI}"][data-j="${cellJ}"]`)
+
     if (gBoard[cellI][cellJ].isMine && !gBoard[cellI][cellJ].isShown) {
-        console.log('tt')
-        elCell.innerText = BOMB
+        //debugger
+        if (gRoundNumber === 2) {
+            gBoard[cellI][cellJ].isMine = false   ///this for first time to give him number and not a bomb 
+            elCell.innerText = countBombs
+            gBoard[cellI][cellJ].isShown = true
+            gRoundNumber++
+            return
+        } else {
+            elCell.innerText = BOMB
+            gBoard[cellI][cellJ].isShown = true
+            return
+        }
+
+
+        //todo gane over 
     } else {
         elCell.innerText = countBombs
+        gBoard[cellI][cellJ].isShown = true
+        gBoard[cellI][cellJ].isMarked = false
     }
-    if (gBoard[cellI][cellJ].isMark && gBoard[cellI][cellJ].isShown) {
-        elCell.innerText = FLAG
-    }
+
+    console.log('new board')
+    console.table(gBoard)
 
 }
 
@@ -96,7 +100,6 @@ function renderCell(location, value) {
 
 function countNegs(rowIdx, colIdx, mat) {
     var negsCount = 0
-
     for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
         if (i < 0 || i >= mat.length) continue
 
@@ -106,7 +109,6 @@ function countNegs(rowIdx, colIdx, mat) {
             if (mat[i][j].isMine) {
                 negsCount++
             }
-            //console.log('i', i, 'j', j, 'negCount', negsCount)
         }
     }
     return negsCount
@@ -120,5 +122,11 @@ function copyMat(mat) {
         }
     }
     return newMat
+}
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
 }
 
