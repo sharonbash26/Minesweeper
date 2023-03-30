@@ -38,13 +38,23 @@ function onCellMouseDown(event, cellI, cellJ) {
     }
 }
 function onCellClicked(elCell, cellI, cellJ) {
+    console.log('gmarked', gmarkedCount)
+    console.log('gSHown', gshownCount)
+    checkVictory()
+    if (!gIsGameOn) {
+        clearInterval(gIdIntervalTimer)
+        return
+    }
+
     gRoundNumber++
     if (gBoard[cellI][cellJ].isShown) {
         return
     }
     if (gIsRightClick) {
+
         if (elCell.innerText === FLAG) {
             elCell.innerText = '🟦'
+            gmarkedCount--
             gBoard[cellI][cellJ].isMarked = false
             console.log('new board')
             console.table(gBoard)
@@ -52,34 +62,45 @@ function onCellClicked(elCell, cellI, cellJ) {
         } else if (elCell.innerText === '🟦' && !gBoard[cellI][cellJ].isMine)
             elCell.innerText = FLAG
         gBoard[cellI][cellJ].isMarked = true
+        gmarkedCount++
         console.log('new board')
         console.table(gBoard)
         return
     }
     gIsRightClick = false
-    //  debugger
+    // debugger
     var countBombs = gBoard[cellI][cellJ].minesAroundCount
     var elCell = document.querySelector(`[data-i="${cellI}"][data-j="${cellJ}"]`)
 
     if (gBoard[cellI][cellJ].isMine && !gBoard[cellI][cellJ].isShown) {
         //debugger
+        openFirstDegreeNeighbors(cellI, cellJ)
         if (gRoundNumber === 2) {
             gBoard[cellI][cellJ].isMine = false   ///this for first time to give him number and not a bomb 
             elCell.innerText = countBombs
+            gshownCount++
             gBoard[cellI][cellJ].isShown = true
             gRoundNumber++
             return
         } else {
             elCell.innerText = BOMB
             gBoard[cellI][cellJ].isShown = true
+            gshownCount++
+            gLife--
+            var elLife = document.querySelector('h2 span')
+            elLife.innerText = gLife
+            console.log('live', gLife)
             return
         }
 
 
         //todo gane over 
     } else {
+        openFirstDegreeNeighbors(cellI, cellJ)
+
         elCell.innerText = countBombs
         gBoard[cellI][cellJ].isShown = true
+        gshownCount++
         gBoard[cellI][cellJ].isMarked = false
     }
 
@@ -129,4 +150,6 @@ function getRandomInt(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
 }
+
+
 

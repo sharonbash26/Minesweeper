@@ -6,8 +6,17 @@ var gBoard
 var gIsGameOn = false
 var gRoundNumber = 0
 var gIsRightClick = false
+var gLife = 3
+var gIdIntervalTimer = 0
+var gmarkedCount = 0
+var gshownCount = 0
+var gSizeBorad
 
 function onInit() {
+    startTimer()
+    gIsGameOn = true
+    var smilie = document.querySelector('.smile')
+    smilie.innerText = '😀'
     gBoard = createBoard(4, 4)
     renderBoard(gBoard, '.board-container')
     putRandomMins(2)
@@ -21,8 +30,8 @@ function onInit() {
     console.table(gBoard)
     renderBoard(gBoard, '.board-container')
 
-}
 
+}
 function createBoard(rows, cols) {
     var board = []
     for (var i = 0; i < rows; i++) {
@@ -30,13 +39,9 @@ function createBoard(rows, cols) {
         for (var j = 0; j < cols; j++) {
             board[i][j] = { minesAroundCount: 0, isShown: false, isMine: false, isMarked: false }
         }
-
     }
     return board;
 }
-
-
-
 
 function countMinesForAllCells(board) {
     var newBoard = copyMat(board)
@@ -57,6 +62,8 @@ function beginner() {
     gBoard = createBoard(countRowsCols, countRowsCols)
     putRandomMins(countMins)
     renderBoard(gBoard, '.board-container')
+    gBoard = countMinesForAllCells(gBoard)
+    renderBoard(gBoard, '.board-container')
     return gBoard
 }
 
@@ -65,6 +72,8 @@ function medium() {
     var countMins = 14
     gBoard = createBoard(countRowsCols, countRowsCols)
     putRandomMins(countMins)
+    renderBoard(gBoard, '.board-container')
+    gBoard = countMinesForAllCells(gBoard)
     renderBoard(gBoard, '.board-container')
     return gBoard
 }
@@ -75,24 +84,94 @@ function expert() {
     gBoard = createBoard(countRowsCols, countRowsCols)
     putRandomMins(countMins)
     renderBoard(gBoard, '.board-container')
-
+    gBoard = countMinesForAllCells(gBoard)
+    renderBoard(gBoard, '.board-container')
     return gBoard
 }
 
 function putRandomMins(count) {
-  //  debugger
     var randomI
     var randonJ
     var randomItem
     for (var i = 0; i < count; i++) {
-        randomI = getRandomInt(0, gBoard.length-1)
-        randonJ = getRandomInt(0, gBoard.length-1)
+        randomI = getRandomInt(0, gBoard.length - 1)
+        randonJ = getRandomInt(0, gBoard.length - 1)
         randomItem = gBoard[randomI][randonJ].isMine = true
-        console.log('randomItem',randomItem)
+        console.log('randomItem', randomItem)
     }
     console.log('new board')
     console.table(gBoard)
 }
+function openFirstDegreeNeighbors(cellI, cellJ) {
+    console.log('cellI', cellI)
+    console.log('cellJ', cellJ)
+    for (var i = cellI - 1; i <= cellI + 1; i++) {
+        if (i < 0 || i >= gBoard.length) continue
+        for (var j = cellJ - 1; j <= cellJ + 1; j++) {
+            if (j < 0 || j >= gBoard[0].length) continue
+            if (i === cellI && j === cellJ) continue
+            if (gBoard[i][j].minesAroundCount === 0 && !gBoard[i][j].isShown && !gBoard[i][j].isMine) {
+                console.log('i', i, 'j', j)
+                // model:
+                gBoard[i][j].isShown = true
+                gshownCount++
+                // console.log(gBoard)
+                // dom:
+                var countBombs = gBoard[cellI][cellJ].minesAroundCount
 
+                var elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`)
+                elCell.innerText = countBombs
+                // elCell.classList.remove('occupied')
+            }
+        }
+    }
+}
+
+function checkVictory() {
+    if (gLife === 0) {
+        var smilie = document.querySelector('.smile')
+        smilie.innerText = '😥'
+        gIsGameOn = false
+        return
+    }
+    gSizeBorad = gBoard.length * gBoard[0].length
+    if (gshownCount + gmarkedCount === gSizeBorad) {
+        if (isCellMarkOrShown) {
+            alert('winner')
+        }
+    }
+
+}
+
+function isCellMarkOrShown() {
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[0].length; j++) {
+            if (!gBoard[i][j].isMarked && !gBoard[i][j].isShown) {
+                return false
+            }
+        }
+    }
+    return true
+}
+
+
+function startTimer() {
+    var timer = document.querySelector("h3 span")
+    var seconds = 0;
+    var minutes = 0;
+    var hours = 0;
+    gIdIntervalTimer = setInterval(function () {
+        seconds++;
+        if (seconds === 60) {
+            seconds = 0;
+            minutes++;
+            if (minutes === 60) {
+                minutes = 0;
+                hours++;
+            }
+        }
+        timer.textContent = (hours ? (hours > 9 ? hours : "0" + hours) : "00") + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
+    }, 1000);
+}
 
 

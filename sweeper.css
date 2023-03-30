@@ -2,25 +2,29 @@ body {
     background-color: black;
     color: white;
     text-align: center;
-  }
-  
-  table {
+}
+
+table {
     margin: auto;
     color: aqua;
     background-color: antiquewhite;
-  }
-  
-  .cell {
+}
+
+.cell {
     width: 40px;
     height: 40px;
     font-size: 1.5em;
     background-color: aliceblue;
-  }
-  h4{
+}
+
+h4 {
     margin-top: 15%;
-  }
-  .Btn{
+}
+
+.Btn {
     margin-bottom: 50px;
-  }
+}
 
-
+.smile{
+font-size: 30px;
+}
