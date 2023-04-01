@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,19 +9,30 @@
 
     <title>Mine Sweeper</title>
 </head>
-<body onload="onInit()">
+
+<body onload="onInit()"  oncontextmenu="return false">
     <h1>Mine Sweeper!</h1>
     <h2 class="life">Life:<span>3</span></h2>
     <h3 class="score">Score <span>00:00:00</span></h3>
     <button class="smile" onClick="onInit()">😀</button>
+    <button class="darkm" onClick="darkModeToggle()">Dark Mode</button>
+    <button class="safe-click" onClick="safeClickBtn()">Safe Button</button>
+    <div class="div-safe">
+        <h7 class="safe"><span>3</span> clicks available</h7>
+    </div>
+
     <button class="Btn Beginner" onclick="beginner()">Beginner</button>
     <button class="Btn Medium" onclick="medium()">Medium</button>
     <button class="Btn Expert" onclick="expert()">Expert</button>
     <div class="board-container"></div>
+
     <h4>Sharon Bash</h4>
 
 
     <script src="utils.js"></script>
     <script src="game.js"></script>
+    <script src="extras.js"></script>
 </body>
+
 </html>
+

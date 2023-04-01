@@ -1,5 +1,5 @@
 'use strict'
-//sharon bashh
+//
 function renderBoard(mat, selector) {
     var cell
     var strHTML = '<table border="0"><tbody>'
@@ -26,10 +26,9 @@ function renderBoard(mat, selector) {
     const elContainer = document.querySelector(selector)
     elContainer.innerHTML = strHTML
 }
+
 function onCellMouseDown(event, cellI, cellJ) {
-    // debugger
     if (event.button === 2) { // right mouse button pressed
-        event.preventDefault();// prevent default behavior of right click
         gIsRightClick = true
         onCellClicked(event.target, cellI, cellJ);
     } else {
@@ -37,14 +36,18 @@ function onCellMouseDown(event, cellI, cellJ) {
         onCellClicked(event.target, cellI, cellJ);
     }
 }
+
 function onCellClicked(elCell, cellI, cellJ) {
-    console.log('gmarked', gmarkedCount)
-    console.log('gSHown', gshownCount)
     checkVictory()
     if (!gIsGameOn) {
         clearInterval(gIdIntervalTimer)
+        clearInterval(gIdIntervalSafeCells)
+        clearTimeout(gIdTimeout)
+        var btn = document.querySelector('.safe-click')
+        btn.disabled = true
         return
     }
+
 
     gRoundNumber++
     if (gBoard[cellI][cellJ].isShown) {
@@ -58,8 +61,9 @@ function onCellClicked(elCell, cellI, cellJ) {
             gBoard[cellI][cellJ].isMarked = false
             console.log('new board')
             console.table(gBoard)
+
             return
-        } else if (elCell.innerText === '🟦' && !gBoard[cellI][cellJ].isMine)
+        } else if (elCell.innerText === '🟦' && !gBoard[cellI][cellJ].isShown)
             elCell.innerText = FLAG
         gBoard[cellI][cellJ].isMarked = true
         gmarkedCount++
@@ -68,12 +72,11 @@ function onCellClicked(elCell, cellI, cellJ) {
         return
     }
     gIsRightClick = false
-    // debugger
     var countBombs = gBoard[cellI][cellJ].minesAroundCount
     var elCell = document.querySelector(`[data-i="${cellI}"][data-j="${cellJ}"]`)
 
     if (gBoard[cellI][cellJ].isMine && !gBoard[cellI][cellJ].isShown) {
-        //debugger
+
         openFirstDegreeNeighbors(cellI, cellJ)
         if (gRoundNumber === 2) {
             gBoard[cellI][cellJ].isMine = false   ///this for first time to give him number and not a bomb 
@@ -85,6 +88,7 @@ function onCellClicked(elCell, cellI, cellJ) {
         } else {
             elCell.innerText = BOMB
             gBoard[cellI][cellJ].isShown = true
+
             gshownCount++
             gLife--
             var elLife = document.querySelector('h2 span')
@@ -93,8 +97,6 @@ function onCellClicked(elCell, cellI, cellJ) {
             return
         }
 
-
-        //todo gane over 
     } else {
         openFirstDegreeNeighbors(cellI, cellJ)
 
@@ -106,15 +108,10 @@ function onCellClicked(elCell, cellI, cellJ) {
 
     console.log('new board')
     console.table(gBoard)
-
 }
 
 
-
-
-// location is an object like this - { i: 2, j: 7 }
 function renderCell(location, value) {
-    // Select the elCell and set the value
     const elCell = document.querySelector(`.cell-${location.i}-${location.j}`)
     elCell.innerHTML = value
 }
