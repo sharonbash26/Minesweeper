@@ -6,11 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="sweeper.css">
-
     <title>Mine Sweeper</title>
 </head>
 
-<body onload="onInit()"  oncontextmenu="return false">
+<body onload="onInit()" oncontextmenu="return false">
     <h1>Mine Sweeper!</h1>
     <h2 class="life">Life:<span>3</span></h2>
     <h3 class="score">Score <span>00:00:00</span></h3>
@@ -20,19 +19,14 @@
     <div class="div-safe">
         <h7 class="safe"><span>3</span> clicks available</h7>
     </div>
-
-    <button class="Btn Beginner" onclick="beginner()">Beginner</button>
-    <button class="Btn Medium" onclick="medium()">Medium</button>
-    <button class="Btn Expert" onclick="expert()">Expert</button>
+    <button class="Btn Beginner" onclick="GameManagement('Beginner')">Beginner</button>
+    <button class="Btn Medium" onclick="GameManagement('Medium')">Medium</button>
+    <button class="Btn Expert" onclick="GameManagement('Expert')">Expert</button>
     <div class="board-container"></div>
-
     <h4>Sharon Bash</h4>
-
-
     <script src="utils.js"></script>
     <script src="game.js"></script>
     <script src="extras.js"></script>
 </body>
 
 </html>
-
